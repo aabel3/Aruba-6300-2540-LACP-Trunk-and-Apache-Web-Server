@@ -1,5 +1,4 @@
 # Aruba 6300 & 2540: LACP Trunk, VLANs and Apache Web Server
-
 A hands-on networking lab that links an **Aruba 6300 (AOS-CX)** and an **Aruba 2540** switch with a two-link **LACP trunk**, carries **VLAN 7** and **VLAN 70** across it, and routes between the VLANs on the 6300, which also runs the **DHCP server**. Two **Ubuntu 22.04 virtual machines**, one per VLAN, get their addressing from the 6300. The VLAN 7 VM hosts an **Apache web server** that the VLAN 70 VM reaches across the trunk, and every hop is checked with **SSH**, **HTTP** and **Wireshark** captures.
 
 ![Platform](https://img.shields.io/badge/Platform-Aruba%206300%20%7C%20Aruba%202540-orange)
@@ -12,7 +11,6 @@ A hands-on networking lab that links an **Aruba 6300 (AOS-CX)** and an **Aruba 2
 ---
 
 ## 📚 Project Objectives
-
 - Split the starting reservation `172.20.0.0/16` into `/25` subnets for VLAN 7 and VLAN 70
 - Connect two switches (Aruba 6300 and Aruba 2540) with a two-port **LACP port-channel** trunk
 - Carry VLANs 7 and 70 across the trunk and route between them on the 6300
@@ -25,27 +23,11 @@ A hands-on networking lab that links an **Aruba 6300 (AOS-CX)** and an **Aruba 2
 ---
 
 ## 🗺️ Network Topology
-
 ![Network diagram](screenshots/01-network-diagram.png)
-
-```mermaid
-graph LR
-    VM7["Ubuntu VM + Apache<br/>VLAN 7<br/>172.20.7.5/25"] ---|"1/1/3 · access VLAN 7"| SW6300["Aruba 6300<br/>SVI 172.20.7.1/25<br/>SVI 172.20.70.1/25<br/>DHCP server"]
-    SW6300 ===|"LAG 1 · LACP trunk · VLANs 7, 70<br/>1/1/1 and 1/1/2 to ports 1 and 2"| SW2540["Aruba 2540<br/>VLANs 7, 70 tagged on trk1"]
-    SW2540 ---|"port 3 · untagged VLAN 70"| VM70["Ubuntu VM<br/>VLAN 70<br/>172.20.70.108/25"]
-```
-
-| VLAN | Name   | Network          | Gateway (SVI on 6300) | DHCP Pool                        | Access Port         |
-|------|--------|------------------|-----------------------|----------------------------------|---------------------|
-| 7    | VLAN7  | `172.20.7.0/25`  | `172.20.7.1`          | `172.20.7.1` – `172.20.7.126`    | 6300 port `1/1/3`   |
-| 70   | VLAN70 | `172.20.70.0/25` | `172.20.70.1`         | `172.20.70.1` – `172.20.70.126`  | 2540 port `3`       |
-
-Addresses handed out in the final run: `172.20.7.5` (VLAN 7 VM, Apache server) and `172.20.70.108` (VLAN 70 VM). See [docs/topology.md](docs/topology.md) for the full breakdown.
 
 ---
 
 ## 📂 Repository Layout
-
 ```
 Aruba-6300-2540-LACP-Trunk-and-Apache-Web-Server/
 ├── configs/
@@ -71,7 +53,6 @@ Aruba-6300-2540-LACP-Trunk-and-Apache-Web-Server/
 ---
 
 ## 🧰 Requirements
-
 - Aruba 6300 switch running AOS-CX (CLI prompt `Switch-7#` in the captures)
 - Aruba 2540 switch (ArubaOS-Switch CLI)
 - Two cables between the switches for the LACP trunk
@@ -217,7 +198,6 @@ default via 172.20.70.1 dev ens33 proto dhcp metric 20101
 ---
 
 ## 🔍 How It Works
-
 1. **LACP trunk** – Ports `1/1/1` and `1/1/2` on the 6300 form `lag 1`, and ports `1` and `2` on the 2540 form `trk1` with LACP. The bundle carries VLANs 7 and 70 as tagged traffic.
 2. **VLANs** – VLAN 7 has one access port (6300 `1/1/3`) and VLAN 70 has one untagged port (2540 port `3`), so each VM sits in its own Layer 2 broadcast domain.
 3. **Routing** – The 2540 only switches. The 6300 holds both gateway interfaces (`interface vlan 7` and `interface vlan 70`) and routes between the two `/25` networks.
@@ -230,7 +210,6 @@ default via 172.20.70.1 dev ens33 proto dhcp metric 20101
 ---
 
 ## 🖼️ Screenshots
-
 | # | Screenshot | File |
 |---|------------|------|
 | 1 | Network diagram | [01-network-diagram.png](screenshots/01-network-diagram.png) |
@@ -254,7 +233,6 @@ default via 172.20.70.1 dev ens33 proto dhcp metric 20101
 ---
 
 ## 📖 References
-
 - [ArubaOS 8.x CLI Reference Guide](https://arubanetworking.hpe.com/techdocs/ArubaOS-8.x-Books/ArubaOS-8.x-CLI-Reference-Guide.pdf)
 - [HPE Support – document a00021327en_us](https://support.hpe.com/hpesc/public/docDisplay?docId=a00021327en_us)
 - [HPE Support – document a00055715en_us](https://support.hpe.com/hpesc/public/docDisplay?docId=a00055715en_us&docLocale=en_US)
