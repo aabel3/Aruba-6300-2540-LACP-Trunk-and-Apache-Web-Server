@@ -1,0 +1,16 @@
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Never commit keys or credentials
+id_*
+*.pem
+*.key
+known_hosts
+authorized_keys
+
+# Packet Tracer backups
+*.pkz.bak
+*.pkt.bak
